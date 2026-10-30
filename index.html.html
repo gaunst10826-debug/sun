@@ -1,0 +1,1207 @@
+DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>전자공학 연구원 세부 직업 탐색 플랫폼</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Noto Sans KR) -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Noto Sans KR', 'sans-serif'],
+                    },
+                    colors: {
+                        tech: {
+                            50: '#f0f7ff',<!
+                            100: '#e0effe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            800: '#0c4a6e',
+                            900: '#0f172a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for better visual look */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        
+        .tab-active {
+            border-bottom: 3px solid #0284c7;
+            color: #0284c7;
+            font-weight: 700;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- Header / Navigation Bar -->
+    <header class="bg-slate-900 text-white shadow-lg sticky top-0 z-40 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo & Title -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('explore')">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-md">
+                        <i class="fa-solid fa-microchip text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg leading-tight">전자공학 연구원 <span class="text-sky-400 font-normal text-sm">진로 탐색 Lab</span></h1>
+                        <p class="text-xs text-slate-400">고등학생을 위한 맞춤형 세부 직업 & 탐구 설계</p>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation Tabs -->
+                <nav class="hidden md:flex space-x-8 text-sm font-medium">
+                    <button id="nav-explore" onclick="switchTab('explore')" class="py-5 text-sky-400 tab-active flex items-center space-x-2 transition">
+                        <i class="fa-solid fa-layer-group"></i>
+                        <span>세부 직업 탐색</span>
+                    </button>
+                    <button id="nav-compare" onclick="switchTab('compare')" class="py-5 text-slate-300 hover:text-white flex items-center space-x-2 transition">
+                        <i class="fa-solid fa-code-compare"></i>
+                        <span>직업 비교하기</span>
+                    </button>
+                    <button id="nav-roadmap" onclick="switchTab('roadmap')" class="py-5 text-slate-300 hover:text-white flex items-center space-x-2 transition">
+                        <i class="fa-solid fa-route"></i>
+                        <span>진로 로드맵</span>
+                    </button>
+                    <button id="nav-project" onclick="switchTab('project')" class="py-5 text-slate-300 hover:text-white flex items-center space-x-2 transition">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <span>생기부 프로젝트 추천</span>
+                    </button>
+                </nav>
+
+                <!-- Mobile Menu Toggle Button -->
+                <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-800 border-t border-slate-700 px-4 pt-2 pb-4 space-y-2">
+            <button onclick="switchTab('explore'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-white font-medium hover:bg-slate-700">
+                <i class="fa-solid fa-layer-group w-6"></i> 세부 직업 탐색
+            </button>
+            <button onclick="switchTab('compare'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-slate-300 font-medium hover:bg-slate-700">
+                <i class="fa-solid fa-code-compare w-6"></i> 직업 비교하기
+            </button>
+            <button onclick="switchTab('roadmap'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-slate-300 font-medium hover:bg-slate-700">
+                <i class="fa-solid fa-route w-6"></i> 진로 로드맵
+            </button>
+            <button onclick="switchTab('project'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-slate-300 font-medium hover:bg-slate-700">
+                <i class="fa-solid fa-lightbulb w-6"></i> 생기부 프로젝트 추천
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- ================= SECTION 1: CAREER EXPLORATION (cards view) ================= -->
+        <section id="tab-explore" class="animate-fade-in space-y-6">
+            <!-- Hero Banner -->
+            <div class="bg-gradient-to-r from-slate-900 via-tech-800 to-indigo-900 rounded-2xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
+                <div class="relative z-10 max-w-2xl">
+                    <span class="inline-block px-3 py-1 bg-sky-500/20 text-sky-300 text-xs font-semibold rounded-full border border-sky-400/30 mb-3">
+                        전자공학(Electronics Engineering) 분야
+                    </span>
+                    <h2 class="text-2xl md:text-3xl font-black mb-3 leading-snug">
+                        미래 첨단 기술을 이끄는 <br class="hidden sm:inline"><span class="text-sky-400">전자공학 연구원</span>의 세계
+                    </h2>
+                    <p class="text-slate-300 text-sm md:text-base leading-relaxed mb-4">
+                        반도체, AI 시스템, 디스플레이, 5G/6G 통신, 자율주행 로봇까지! 관심 있는 세부 연구 분야를 선택하여 직무, 고교 권장 과목, 필요 역량 및 생기부 탐구 주제를 확인해보세요.
+                    </p>
+                    <div class="flex flex-wrap gap-2 text-xs text-slate-300">
+                        <span class="bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-700"><i class="fa-solid fa-check text-sky-400 mr-1"></i> 세부직업 5종</span>
+                        <span class="bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-700"><i class="fa-solid fa-check text-sky-400 mr-1"></i> 고교 이수 과목 가이드</span>
+                        <span class="bg-slate-800/80 px-2.5 py-1 rounded-md border border-slate-700"><i class="fa-solid fa-check text-sky-400 mr-1"></i> 탐구 프로젝트 아이디어</span>
+                    </div>
+                </div>
+                <!-- Subtle Background Graphic Element -->
+                <i class="fa-solid fa-network-wired absolute -right-10 -bottom-10 text-9xl text-white/5 pointer-events-none"></i>
+            </div>
+
+            <!-- Sub-career Category Filter / Quick Guide -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                <div class="text-sm font-medium text-slate-700">
+                    <i class="fa-solid fa-filter text-sky-500 mr-2"></i> 관심 분야 카드를 클릭하여 상세 정보를 확인하세요.
+                </div>
+                <div class="text-xs text-slate-500">
+                    총 <span id="career-count" class="font-bold text-sky-600">5개</span>의 대표 세부 직업 제공
+                </div>
+            </div>
+
+            <!-- Career Cards Grid -->
+            <div id="career-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Cards dynamically injected via JavaScript -->
+            </div>
+        </section>
+
+
+        <!-- ================= SECTION 2: CAREER COMPARISON ================= -->
+        <section id="tab-compare" class="hidden animate-fade-in space-y-6">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                <h2 class="text-xl font-bold text-slate-900 mb-2 flex items-center">
+                    <i class="fa-solid fa-code-compare text-sky-500 mr-2"></i> 세부 직업 비교 분석기
+                </h2>
+                <p class="text-sm text-slate-600 mb-6">
+                    관심 있는 2개의 세부 직업을 선택하여 직무 특징, 필요 역량, 공통점 및 차이점을 한눈에 비교해보세요.
+                </p>
+
+                <!-- Select Selectors -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 mb-6">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">직업 1 선택</label>
+                        <select id="compare-select-1" onchange="renderComparison()" class="w-full bg-white border border-slate-300 rounded-lg p-3 text-sm font-medium text-slate-800 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                            <!-- Options injected by JS -->
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">직업 2 선택</label>
+                        <select id="compare-select-2" onchange="renderComparison()" class="w-full bg-white border border-slate-300 rounded-lg p-3 text-sm font-medium text-slate-800 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                            <!-- Options injected by JS -->
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Comparison Output Container -->
+                <div id="comparison-result" class="space-y-6">
+                    <!-- Rendered by JS -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= SECTION 3: ROADMAP INFOGRAPHIC ================= -->
+        <section id="tab-roadmap" class="hidden animate-fade-in space-y-6">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-200">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900 flex items-center">
+                            <i class="fa-solid fa-route text-sky-500 mr-2"></i> 진로 준비 단계별 로드맵 (Infographic)
+                        </h2>
+                        <p class="text-sm text-slate-600 mt-1">
+                            목표 직업을 선택하고 고등학교부터 대학, 연구원 진출까지의 이정표를 확인하세요.
+                        </p>
+                    </div>
+
+                    <!-- Target Career Selector for Roadmap -->
+                    <div class="min-w-[240px]">
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">목표 세부 직업 선택</label>
+                        <select id="roadmap-career-select" onchange="renderRoadmap()" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm font-bold text-slate-800 focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                            <!-- Options injected by JS -->
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Selected Target Header Banner -->
+                <div id="roadmap-header" class="bg-gradient-to-r from-sky-600 to-indigo-700 text-white p-5 rounded-xl mb-8 flex items-center justify-between shadow-md">
+                    <!-- Dynamic Header -->
+                </div>
+
+                <!-- Infographic Timeline Visualizer -->
+                <div class="relative pl-6 md:pl-10 space-y-8 before:absolute before:inset-0 before:left-3.5 md:before:left-5 before:w-1 before:bg-sky-200">
+                    
+                    <!-- Step 1: High School -->
+                    <div class="relative bg-white rounded-xl p-5 border-2 border-sky-100 shadow-sm hover:shadow-md transition">
+                        <div class="absolute -left-10 md:-left-12 top-4 w-8 h-8 rounded-full bg-sky-500 text-white flex items-center justify-center font-bold text-sm shadow">
+                            1
+                        </div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold px-2.5 py-1 bg-sky-100 text-sky-800 rounded-full">고등학교 단계 (High School)</span>
+                            <span class="text-xs text-slate-400 font-medium">탐구 & 과목 이수</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">고교 과목 선택 및 기초 탐구 역량 배양</h3>
+                        <div id="roadmap-step-1" class="space-y-3 text-sm text-slate-600">
+                            <!-- JS content -->
+                        </div>
+                    </div>
+
+                    <!-- Step 2: University / Undergraduate -->
+                    <div class="relative bg-white rounded-xl p-5 border-2 border-indigo-100 shadow-sm hover:shadow-md transition">
+                        <div class="absolute -left-10 md:-left-12 top-4 w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow">
+                            2
+                        </div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold px-2.5 py-1 bg-indigo-100 text-indigo-800 rounded-full">대학교 단계 (University)</span>
+                            <span class="text-xs text-slate-400 font-medium">전공 심화 & 실습</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">전자공학 핵심 이론 및 프로젝트 이수</h3>
+                        <div id="roadmap-step-2" class="space-y-3 text-sm text-slate-600">
+                            <!-- JS content -->
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Career & Advanced Research -->
+                    <div class="relative bg-white rounded-xl p-5 border-2 border-slate-800 shadow-sm hover:shadow-md transition">
+                        <div class="absolute -left-10 md:-left-12 top-4 w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-sm shadow">
+                            3
+                        </div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold px-2.5 py-1 bg-slate-100 text-slate-800 rounded-full">연구원 / 전문 진로 (R&D Career)</span>
+                            <span class="text-xs text-slate-400 font-medium">연구개발 & 전문화</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">연구소 입사 및 전문 연구원 활동</h3>
+                        <div id="roadmap-step-3" class="space-y-3 text-sm text-slate-600">
+                            <!-- JS content -->
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- High Schooler Checklist Tracker -->
+                <div class="mt-10 p-5 bg-slate-50 rounded-xl border border-slate-200">
+                    <h4 class="font-bold text-slate-900 mb-3 flex items-center text-sm">
+                        <i class="fa-solid fa-list-check text-sky-600 mr-2"></i> 고등학생 지금 당장 실천 체크리스트
+                    </h4>
+                    <div id="roadmap-checklist" class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                        <!-- JS generated checkboxes -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= SECTION 4: STUDENT RECORD PROJECT IDEAS ================= -->
+        <section id="tab-project" class="hidden animate-fade-in space-y-6">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                <div class="mb-6">
+                    <h2 class="text-xl font-bold text-slate-900 flex items-center">
+                        <i class="fa-solid fa-lightbulb text-amber-500 mr-2"></i> 생기부 연계 탐구 프로젝트 추천
+                    </h2>
+                    <p class="text-sm text-slate-600 mt-1">
+                        학교 수업(물리학, 수학, 미적분, 정보 등)과 연계하여 나만의 독창적인 탐구 보고서를 작성해보세요.
+                    </p>
+                </div>
+
+                <!-- Category Filter Buttons -->
+                <div id="project-filter-buttons" class="flex flex-wrap gap-2 mb-6">
+                    <button onclick="filterProjects('all')" class="project-filter-btn px-4 py-2 text-xs font-bold rounded-lg bg-sky-600 text-white shadow-sm">
+                        전체 보기
+                    </button>
+                    <!-- Injected by JS -->
+                </div>
+
+                <!-- Project List -->
+                <div id="project-list-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Project Cards dynamically loaded -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-2">
+            <p class="font-medium text-slate-300">고등학생을 위한 [전자공학 연구원] 세부 직업 탐색 & 생기부 진로 가이드</p>
+            <p class="text-slate-500">본 웹앱은 고교학점제 선택 과목 및 학생부 종합전형 탐구 프로젝트 설계를 돕기 위해 제작되었습니다.</p>
+        </div>
+    </footer>
+
+
+    <!-- ================= DETAIL MODAL ================= -->
+    <div id="detail-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-fade-in my-8">
+            
+            <!-- Modal Header -->
+            <div id="modal-header" class="bg-slate-900 text-white p-6 relative flex-shrink-0">
+                <button onclick="closeModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+                <div id="modal-badge" class="mb-2"></div>
+                <h2 id="modal-title" class="text-2xl font-extrabold text-white"></h2>
+                <p id="modal-tagline" class="text-slate-300 text-xs md:text-sm mt-1"></p>
+            </div>
+
+            <!-- Modal Body (Scrollable) -->
+            <div id="modal-body" class="p-6 overflow-y-auto space-y-6 text-sm text-slate-700">
+                
+                <!-- 1. 직무 및 실무 사례 -->
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                    <h3 class="font-bold text-slate-900 text-base flex items-center text-sky-700">
+                        <i class="fa-solid fa-briefcase mr-2"></i> 1. 핵심 직무 및 실제 업무 사례
+                    </h3>
+                    <p id="modal-duties" class="leading-relaxed text-slate-700"></p>
+                    <div class="bg-white p-3 rounded-lg border border-slate-200 mt-2">
+                        <span class="text-xs font-bold text-slate-500 block mb-1">실무 개발 예시</span>
+                        <p id="modal-cases" class="text-xs text-slate-600 italic"></p>
+                    </div>
+                </div>
+
+                <!-- 2. 추천 학과, 추천 대학교 및 고교 선택 과목 -->
+                <div class="space-y-3">
+                    <h3 class="font-bold text-slate-900 text-base flex items-center text-indigo-700">
+                        <i class="fa-solid fa-graduation-cap mr-2"></i> 2. 추천 학과, 추천 대학교 및 고교 선택 과목
+                    </h3>
+                    
+                    <!-- 추천 학과 -->
+                    <div class="p-3 bg-indigo-50/50 rounded-xl border border-indigo-100">
+                        <span class="text-xs font-bold text-indigo-900 block mb-1 shadow-sm">
+                            <i class="fa-solid fa-book-open mr-1"></i> 추천 대학 학과 / 전공
+                        </span>
+                        <div id="modal-majors" class="flex flex-wrap gap-1 mt-1"></div>
+                    </div>
+
+                    <!-- 추천 대학교 (성적/지역별 카테고리화) -->
+                    <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-2.5">
+                        <span class="text-xs font-bold text-slate-800 block border-b border-slate-200 pb-1">
+                            <i class="fa-solid fa-building-columns text-sky-600 mr-1"></i> 진학 목표별 추천 대학교 라인업
+                        </span>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                            <div class="bg-white p-2.5 rounded-lg border border-slate-200">
+                                <span class="font-bold text-indigo-700 block text-[11px] mb-0.5">🏆 최상위 / 주요 상위권</span>
+                                <p id="modal-unis-top" class="text-slate-600 font-medium text-[11px]"></p>
+                            </div>
+                            <div class="bg-white p-2.5 rounded-lg border border-slate-200">
+                                <span class="font-bold text-sky-700 block text-[11px] mb-0.5">🏛️ 수도권 주요대 & 특화대</span>
+                                <p id="modal-unis-mid" class="text-slate-600 font-medium text-[11px]"></p>
+                            </div>
+                            <div class="bg-white p-2.5 rounded-lg border border-slate-200">
+                                <span class="font-bold text-emerald-700 block text-[11px] mb-0.5">🌲 거점 국립대학교</span>
+                                <p id="modal-unis-regional" class="text-slate-600 font-medium text-[11px]"></p>
+                            </div>
+                            <div class="bg-white p-2.5 rounded-lg border border-slate-200">
+                                <span class="font-bold text-amber-700 block text-[11px] mb-0.5">🌱 도전/친근 대학 & 전문대</span>
+                                <p id="modal-unis-accessible" class="text-slate-600 font-medium text-[11px]"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 고교 선택 과목 -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="p-3 bg-sky-50/50 rounded-xl border border-sky-100">
+                            <span class="text-xs font-bold text-sky-900 block mb-1">고교 일반선택 추천과목</span>
+                            <div id="modal-hs-general" class="flex flex-wrap gap-1"></div>
+                        </div>
+                        <div class="p-3 bg-slate-100/70 rounded-xl border border-slate-200">
+                            <span class="text-xs font-bold text-slate-800 block mb-1">고교 진로/융합선택 추천과목</span>
+                            <div id="modal-hs-career" class="flex flex-wrap gap-1"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. 필요 역량 -->
+                <div class="space-y-3">
+                    <h3 class="font-bold text-slate-900 text-base flex items-center text-emerald-700">
+                        <i class="fa-solid fa-chart-bar mr-2"></i> 3. 핵심 필요 역량 (Competencies)
+                    </h3>
+                    <div id="modal-competencies" class="space-y-2"></div>
+                </div>
+
+                <!-- 4. 생기부 연계 탐구 프로젝트 -->
+                <div class="space-y-3">
+                    <h3 class="font-bold text-slate-900 text-base flex items-center text-amber-700">
+                        <i class="fa-solid fa-flask mr-2"></i> 4. 생기부 연계 탐구 프로젝트 주제
+                    </h3>
+                    <div id="modal-projects" class="space-y-3"></div>
+                </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 bg-slate-100 border-t border-slate-200 flex justify-between items-center">
+                <button onclick="closeModal()" class="px-4 py-2 bg-slate-300 hover:bg-slate-400 text-slate-800 text-xs font-bold rounded-lg transition">
+                    닫기
+                </button>
+                <button id="modal-btn-compare" class="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold rounded-lg transition flex items-center space-x-1">
+                    <i class="fa-solid fa-code-compare"></i>
+                    <span>이 직업 비교하기에 추가</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast Message -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl z-50 hidden flex items-center space-x-3 text-sm border border-slate-700">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        <span id="toast-message">알림 메시지</span>
+    </div>
+
+
+    <!-- JavaScript Data and Controller Logic -->
+    <script>
+        // ================= DATA STORE =================
+        const CAREER_DATA = [
+            {
+                id: 'semiconductor',
+                title: '반도체 공정 및 회로설계 연구원',
+                category: '반도체/나노',
+                badgeBg: 'bg-blue-100 text-blue-800',
+                icon: 'fa-microchip',
+                iconBg: 'bg-gradient-to-tr from-blue-600 to-indigo-600',
+                tagline: '초미세 나노 공정과 AI 초집적 반도체 회로를 설계하는 미래 기술의 심장',
+                duties: '스마트폰 AP, AI 반도체(NPU), 메모리 회로를 EDA(Electronic Design Automation) CAD 툴로 설계하고, 수 나노미터(nm) 단위의 웨이퍼 포토·에칭·증착 공정의 수율을 관리 및 개선합니다.',
+                cases: '삼성전자/SK하이닉스/TSMC 차세대 2나노 GAA(Gate-All-Around) 트랜지스터 구조 설계 및 누설 전류 차단 특성 평가',
+                majors: ['전자공학과', '반도체시스템공학과', '시스템반도체공학과', '신소재공학과', '물리학과'],
+                universities: {
+                    top: ['서울대', 'KAIST', '포스텍', '연세대', '고려대', '성균관대', '한양대'],
+                    mid: ['서강대', '중앙대', '경희대', '건국대', '동국대', '홍익대', '국민대', '숭실대', '광운대'],
+                    regional: ['경북대', '부산대', '충남대', '전북대', '전남대', '충북대'],
+                    accessible: ['가천대', '단국대', '명지대', '인천대', '경기대', '가톨릭대', '한경국립대', '서경대', '한국공학대', '동서울대/폴리텍']
+                },
+                hsGeneralSubjects: ['물리학Ⅰ', '화학Ⅰ', '미적분', '정보'],
+                hsCareerSubjects: ['물리학Ⅱ', '기하', '융합과학', '인공지능 수학'],
+                competencies: [
+                    { name: '수리·물리학적 현상 해석력', level: 95, desc: '전자기학, 반도체 물성 및 양자역학적 특성에 대한 이해' },
+                    { name: '회로 시뮬레이션 (SPICE/Verilog)', level: 90, desc: '디지털/아날로그 논리회로 설계 툴 다루기' },
+                    { name: '공정 데이터 정밀 분석력', level: 85, desc: '나노 단측 미세 결함을 분석하는 꼼꼼함' }
+                ],
+                projects: [
+                    {
+                        title: 'CMOS 논리회로의 스위칭 지연 및 전력 소모 상관관계 분석',
+                        subject: '물리학Ⅱ / 미적분',
+                        desc: 'NOT, AND 게이트 트랜지스터 회로 시뮬레이션을 통해 동작 전압 변화에 따른 스위칭 속도와 열 손실 관계를 수학적으로 모델링함.',
+                        tag: '#반도체 #논리회로 #전력효율'
+                    },
+                    {
+                        title: '3나노 미세 공정에서의 GAA(Gate-All-Around) 구조의 누설 전류 억제 메커니즘 탐구',
+                        subject: '물리학Ⅰ / 화학Ⅰ',
+                        desc: '기존 FinFET 구조와 차세대 GAA 구조의 게이트 접촉면적 확장에 따른 절연 특성을 수리적으로 비교 고찰함.',
+                        tag: '#GAA #트랜지스터 #미세공정'
+                    }
+                ],
+                roadmap: {
+                    hs: ['수학·물리학 기초 철저 이수 (물리학Ⅱ, 미적분)', '아두이노/SPICE 기초 논리회로 탐구', '반도체 관련 독서 (반도체 제국, 물성물리학)'],
+                    univ: ['전자기학, 회로이론, 반도체공학 필수 이수', 'Verilog 기반 HDL 반도체 회로 설계 프로젝트', '대학 클린룸 공정 실습 (웨이퍼 제작)'],
+                    career: ['반도체 대기업 R&D 연구소 또는 국책연구원 진출', '석·박사 학위를 통한 미세회로/AI NPU 특화 연구', '차세대 메모리/시스템반도체 수율 최적화 총괄']
+                }
+            },
+            {
+                id: 'embedded',
+                title: '임베디드 및 IoT 시스템 연구원',
+                category: '시스템/SW연동',
+                badgeBg: 'bg-emerald-100 text-emerald-800',
+                icon: 'fa-network-wired',
+                iconBg: 'bg-gradient-to-tr from-emerald-600 to-teal-600',
+                tagline: '하드웨어와 소프트웨어를 결합하여 지능형 스마트 기기를 제어하는 기술자',
+                duties: '마이크로컨트롤러(MCU), 스마트 가전, 웨어러블 기기에 탑재되는 초저전력 C/C++ 기반 펌웨어(Firmware) 및 센서 인터페이스(I2C, SPI)를 개발합니다.',
+                cases: '자율주행 차량용 실시간 OS(RTOS) 컨트롤러 개발 및 스마트홈 센서 노드 초저전력 알고리즘 탑재',
+                majors: ['전자공학과', '임베디드시스템공학과', '컴퓨터공학과', '소프트웨어학과', '지능형로봇학과'],
+                universities: {
+                    top: ['서울대', 'KAIST', '한양대', '성균관대', '고려대', '연세대'],
+                    mid: ['숭실대', '광운대', '세종대', '국민대', '단국대', '건국대', '서울과학기술대'],
+                    regional: ['충남대', '경북대', '부산대', '전남대', '전북대'],
+                    accessible: ['가천대', '경기대', '명지대', '한성대', '서경대', '삼육대', '대림대', '동서울대', '한국폴리텍대']
+                },
+                hsGeneralSubjects: ['물리학Ⅰ', '미적분', '정보', '프로그래밍'],
+                hsCareerSubjects: ['인공지능 기초', '기하', '융합과학'],
+                competencies: [
+                    { name: 'C/C++ & Python 프로그래밍', level: 95, desc: '하드웨어 메모리 직접 제어 및 레지스터 조작 능력' },
+                    { name: '회로도 독해 및 하드웨어 연동', level: 88, desc: '센서, 오실로스코프, 계측 장비 다루기' },
+                    { name: '초저전력 알고리즘 최적화', level: 82, desc: '제한된 칩 메모리 환경에서 효율적 코드 작성' }
+                ],
+                projects: [
+                    {
+                        title: 'MCU와 환경 센서를 결합한 자율 실내 공기질 제어 알고리즘 구현',
+                        subject: '정보 / 물리학Ⅰ',
+                        desc: '아두이노/ESP32 마이크로컨트롤러와 센서를 연결하고, 인터럽트 함수와 Sleep Mode를 활용한 전력 절감 효과 실험.',
+                        tag: '#MCU #임베디드 #초저전력 #IoT'
+                    },
+                    {
+                        title: '하드웨어 모듈 간 통신 프로토콜(SPI vs I2C) 데이터 전송 속도 및 오류율 비교',
+                        subject: '정보 / 미적분',
+                        desc: '신호선 주파수와 노이즈에 따른 직렬 통신 방식의 효율을 오실로스코프로 가시화 분석.',
+                        tag: '#통신프로토콜 #신호제어 #오실로스코프'
+                    }
+                ],
+                roadmap: {
+                    hs: ['C언어 및 아두이노/라즈베리파이 코딩 실습', '정보 과목 이수 및 센서 인터페이스 제어 탐구', '스마트 기기 메이커 프로젝트 경험'],
+                    univ: ['마이크로프로세서, 디지털논리회로, 임베디드OS 이수', 'RTOS 기반 실시간 데이터 처리 캡스톤 디자인', 'Open-source 하드웨어 프로젝트 참여'],
+                    career: ['스마트폰, 자동차 전자제어장치(ECU) 개발사 진출', 'IoT 에지 컴퓨팅 및 온디바이스 AI 펌웨어 연구', '스마트 시스템 설계 최고전문가(System Architect)']
+                }
+            },
+            {
+                id: 'display',
+                title: '디스플레이 및 차세대 광전자 연구원',
+                category: '광학/디스플레이',
+                badgeBg: 'bg-purple-100 text-purple-800',
+                icon: 'fa-tv',
+                iconBg: 'bg-gradient-to-tr from-purple-600 to-pink-600',
+                tagline: 'OLED, Micro-LED, 유연 디스플레이 및 빛을 이용한 차세대 광학 소자 개발',
+                duties: '발광 다이오드(OLED, Micro-LED, 퀀텀닷) 소자의 양자 효율을 높이고, 폴더블·스트레처블 디스플레이 박막 트랜지스터(TFT) 및 광학 센서를 연구합니다.',
+                cases: '투명 OLED 화면 화질 개선 및 XR(확장현실) 글래스용 초고해상도 OLEDoS(OLED on Silicon) 개발',
+                majors: ['전자공학과', '광전자공학과', '정보디스플레이학과', '신소재공학과', '나노공학과'],
+                universities: {
+                    top: ['경희대(정보디스플레이)', '서울대', 'KAIST', '포스텍', '연세대', '고려대', '한양대'],
+                    mid: ['중앙대', '인하대', '건국대', '홍익대', '국민대', '숭실대', '세종대'],
+                    regional: ['경북대', '부산대', '전북대', '충남대', '전남대'],
+                    accessible: ['단국대', '가천대', '경기대', '한국공학대', '수원대', '강원대', '대진대', '지방사립대/전문대']
+                },
+                hsGeneralSubjects: ['물리학Ⅰ', '화학Ⅰ', '미적분'],
+                hsCareerSubjects: ['물리학Ⅱ', '화학Ⅱ', '융합과학'],
+                competencies: [
+                    { name: '광학 및 양자역학 이해', level: 92, desc: '빛의 파동성·입자성 및 빛-물질 상호작용 분석' },
+                    { name: '소자 물성 및 재료 해석', level: 88, desc: '유기/무기 발광 소자의 수명 및 발광 효율 개선' },
+                    { name: '정밀 광학 측정장비 활용력', level: 85, desc: '분광기, 박막 두께 측정기 등 데이터 해석' }
+                ],
+                projects: [
+                    {
+                        title: '퀀텀닷(Quantum Dot) 입자 크기에 따른 발광 스펙트럼 및 에너지 갭 변환 분석',
+                        subject: '물리학Ⅱ / 화학Ⅱ',
+                        desc: '양자 가두기 효과(Quantum Confinement Effect)를 수식화하고 나노 입자 크기와 색상 변환 원리를 논리적으로 도출함.',
+                        tag: '#퀀텀닷 #양자역학 #디스플레이'
+                    },
+                    {
+                        title: '편광 필터 및 위상차 판을 이용한 디스플레이 야외 반사광 차단 원리 탐구',
+                        subject: '물리학Ⅰ',
+                        desc: '빛의 편광 성질을 이용한 반사 방지 코팅 원리를 실험하고 투과율을 측정함.',
+                        tag: '#편광 #광학 #OLED'
+                    }
+                ],
+                roadmap: {
+                    hs: ['물리학Ⅰ/Ⅱ에서 빛과 파동, 전자기파 단원 집중 연구', '편광판 및 LED 발광 원리 실험 보고서 작성', '광학/디스플레이 관련 학술 서적 독서'],
+                    univ: ['광공학, 디스플레이공학, 고체물리학 이수', 'OLED/Micro-LED 소자 제작 실험 및 화질 평가', '학부 연구생 참여를 통한 박막 형성 실습'],
+                    career: ['글로벌 디스플레이/디바이스 기업 R&D 연구소', 'XR/AR 기기용 차세대 마이크로 디스플레이 개발', '차세대 유연(Flexible) 광소자 연구 책임자']
+                }
+            },
+            {
+                id: 'rf_comm',
+                title: '차세대 통신(5G/6G) 및 RF 연구원',
+                category: '통신/전파',
+                badgeBg: 'bg-amber-100 text-amber-800',
+                icon: 'fa-tower-cell',
+                iconBg: 'bg-gradient-to-tr from-amber-500 to-orange-600',
+                tagline: '초고주파 전파와 안테나 설계로 세계를 초연결하는 무선통신 전문가',
+                duties: '5G/6G 이동통신, 자율주행 레이더, 무선충전에 사용되는 초고주파(RF) 회로, 빔포밍 안테나, 신호 처리 프론트엔드 모듈을 설계합니다.',
+                cases: '초고주파(mmWave) 6G 모바일 안테나 배열 설계 및 차세대 위성 통신용 전력 증폭기(PA) 개발',
+                majors: ['전자전기공학과', '정보통신공학과', '전파공학과', '통신공학과'],
+                universities: {
+                    top: ['서울대', 'KAIST', '고려대', '연세대', '한양대', '성균관대'],
+                    mid: ['광운대(전파공학)', '세종대', '국민대', '숭실대', '아주대', '인하대', '건국대'],
+                    regional: ['경북대', '부산대', '충남대', '충북대', '전남대'],
+                    accessible: ['가천대', '한국공학대', '인천대', '명지대', '가톨릭대', '안양대', '신한대', '동양미래대/전문대']
+                },
+                hsGeneralSubjects: ['물리학Ⅰ', '미적분', '기하', '확률과 통계'],
+                hsCareerSubjects: ['물리학Ⅱ', '인공지능 수학', '융합과학'],
+                competencies: [
+                    { name: '전자기학 및 전파 이론', level: 96, desc: '맥스웰 방정식, 안테나 임피던스 매칭 해석' },
+                    { name: 'RF 전자기장 시뮬레이션(HFSS)', level: 88, desc: '3D 안테나 방사패턴 해석 및 잡음(Noise) 차단' },
+                    { name: '신호 처리 및 복소수 수학', level: 86, desc: '푸리에 변환 및 디지털 신호 처리(DSP)' }
+                ],
+                projects: [
+                    {
+                        title: '패치 안테나의 형상 및 기판 유전율에 따른 지향성 및 수신 감도 분석',
+                        subject: '물리학Ⅱ / 기하',
+                        desc: '주파수 파장($\\lambda$)과 안테나 크기의 관계를 기하학적으로 도출하고 무선 수신 전력을 측정함.',
+                        tag: '#RF #안테나 #전자기파 #5G'
+                    },
+                    {
+                        title: '전자기 유도와 자기 공진 방식을 이용한 무선 전력 전송 효율 비교',
+                        subject: '물리학Ⅰ / 미적분',
+                        desc: '거리 및 코일의 권선 수에 따른 공진 주파수 변화와 전력 전달 효율을 수식적으로 도출함.',
+                        tag: '#무선충전 #전자기유도 #공진'
+                    }
+                ],
+                roadmap: {
+                    hs: ['물리학 전자기장 단원 및 수학 미적분/기하 개념 완벽 정립', '무선 통신(Wi-Fi, Bluetooth) 신호 감쇄 실험', '전파 관련 과학 탐구 발표'],
+                    univ: ['전자기학Ⅰ/Ⅱ, 통신이론, 안테나공학, RF회로설계 이수', '3D 전자기장 시뮬레이터(HFSS/CST) 안테나 설계 프로젝트', '신호 처리 매트랩(MATLAB) 실습'],
+                    career: ['통신사, 방위산업체, 스마트폰 안테나 연구소 진출', '6G 이동통신 표준화 및 위성 통신 R&D 주도', '무선 전력/RF 분야 수석 연구원']
+                }
+            },
+            {
+                id: 'robotics',
+                title: '로봇 제어 및 전력전자 연구원',
+                category: '로봇/전력전자',
+                badgeBg: 'bg-rose-100 text-rose-800',
+                icon: 'fa-robot',
+                iconBg: 'bg-gradient-to-tr from-rose-600 to-red-600',
+                tagline: '전력 변환 장치와 피드백 제어로 로봇과 전기차의 역동적 움직임을 구현',
+                duties: '전기차 및 로봇의 구동 모터 인버터/컨버터, 배터리 관리 시스템(BMS), PID 및 상태 공간(State-Space) 제어 알고리즘을 개발합니다.',
+                cases: '휴머노이드 로봇 관절 모터의 고밀도 전력 드라이버 개발 및 전기차 배터리 고효율 전력 변환 회로 설계',
+                majors: ['전자공학과', '로봇공학과', '지능로봇학과', '제어계측공학과', '전기공학과'],
+                universities: {
+                    top: ['KAIST', '포스텍', '서울대', '한양대', '고려대', '연세대'],
+                    mid: ['광운대(로봇)', '국민대(자동차/로봇)', '아주대', '인하대', '숭실대', '서울과학기술대'],
+                    regional: ['경북대', '부산대', '충남대', '전북대', '전남대'],
+                    accessible: ['한국공학대', '가천대', '경기대', '대진대', '한성대', '동양미래대', '한국폴리텍대']
+                },
+                hsGeneralSubjects: ['물리학Ⅰ', '미적분', '기하', '정보'],
+                hsCareerSubjects: ['물리학Ⅱ', '공학 일반', '인공지능 수학'],
+                competencies: [
+                    { name: '자동 제어공학 이론 (PID/피드백)', level: 94, desc: '동적 시스템 수식화 및 안정성 평가' },
+                    { name: '전력 변환 회로 설계 (Inverter)', level: 88, desc: '스위칭 전원 공급 장치(SMPS) 및 BMS 이해' },
+                    { name: '모터 구동 하드웨어 다루기', level: 85, desc: '대전류/고전압 회로 안전 설계' }
+                ],
+                projects: [
+                    {
+                        title: 'PID 제어 알고리즘을 적용한 2륜 자이로 밸런싱 로봇의 기울기 복원 특성 탐구',
+                        subject: '물리학Ⅰ / 미적분 / 정보',
+                        desc: '자이로 센서 데이터에 비례·정적·미분(PID) 가중치를 적용하여 역풍 시 로봇의 평형 유지 반응 속도를 시뮬레이션함.',
+                        tag: '#PID제어 #밸런싱로봇 #자동제어'
+                    },
+                    {
+                        title: 'PWM(Pulse Width Modulation) 제어를 이용한 DC 모터의 전력 효율 및 발열 측정',
+                        subject: '물리학Ⅱ / 미적분',
+                        desc: '듀티 사이클(Duty Cycle) 변화에 따른 토크 및 전력 손실 관계를 수학적으로 계산함.',
+                        tag: '#PWM #전력전자 #모터제어'
+                    }
+                ],
+                roadmap: {
+                    hs: ['물리학 역학/전기 단원 및 미적분 방정식 이수', '아두이노 모터 드라이버 및 PID 제어 기초 제작', '로봇 제어 동아리 활동'],
+                    univ: ['제어공학, 전력전자공학, 회로망이론, 회전기기 이수', 'Matlab/Simulink를 활용한 동적 시스템 제어 모의실험', '자율주행/로봇 경진대회 참가'],
+                    career: ['로봇 제조사, 전기차/배터리 R&D 연구소 진출', '휴머노이드 로봇 관절 제어기 및 BMS 특허 개발', '차세대 모빌리티 전력 변환 연구 총괄']
+                }
+            }
+        ];
+
+        // Currently selected state
+        let currentTab = 'explore';
+        let compareSelection = [CAREER_DATA[0].id, CAREER_DATA[1].id];
+        let currentRoadmapId = CAREER_DATA[0].id;
+        let selectedProjectCategory = 'all';
+
+        // ================= APP INITIALIZATION =================
+        window.onload = function() {
+            renderCareerCards();
+            populateSelectOptions();
+            renderComparison();
+            renderRoadmap();
+            renderProjects();
+        };
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            currentTab = tabId;
+            const tabs = ['explore', 'compare', 'roadmap', 'project'];
+            
+            tabs.forEach(t => {
+                const el = document.getElementById(`tab-${t}`);
+                const navEl = document.getElementById(`nav-${t}`);
+                if (t === tabId) {
+                    el.classList.remove('hidden');
+                    if (navEl) {
+                        navEl.classList.add('tab-active');
+                        navEl.classList.remove('text-slate-300');
+                        navEl.classList.add('text-sky-400');
+                    }
+                } else {
+                    el.classList.add('hidden');
+                    if (navEl) {
+                        navEl.classList.remove('tab-active');
+                        navEl.classList.add('text-slate-300');
+                        navEl.classList.remove('text-sky-400');
+                    }
+                }
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // ================= SECTION 1: CAREER CARDS RENDER =================
+        function renderCareerCards() {
+            const container = document.getElementById('career-cards-container');
+            container.innerHTML = '';
+
+            CAREER_DATA.forEach(career => {
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition duration-300 flex flex-col justify-between cursor-pointer group";
+                card.onclick = () => openModal(career.id);
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-xs font-bold px-3 py-1 rounded-full ${career.badgeBg}">
+                                ${career.category}
+                            </span>
+                            <div class="w-10 h-10 rounded-xl ${career.iconBg} text-white flex items-center justify-center shadow-md group-hover:scale-110 transition">
+                                <i class="fa-solid ${career.icon} text-lg"></i>
+                            </div>
+                        </div>
+
+                        <h3 class="text-lg font-bold text-slate-900 group-hover:text-sky-600 transition mb-2">
+                            ${career.title}
+                        </h3>
+
+                        <p class="text-xs text-slate-500 line-clamp-2 mb-4 leading-relaxed">
+                            ${career.tagline}
+                        </p>
+
+                        <div class="space-y-2 mb-4">
+                            <div class="text-xs text-slate-600">
+                                <span class="font-bold text-slate-800"><i class="fa-solid fa-graduation-cap text-indigo-500 mr-1"></i> 추천 학과:</span>
+                                <div class="flex flex-wrap gap-1 mt-1">
+                                    ${career.majors.slice(0, 3).map(m => `<span class="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-[11px]">${m}</span>`).join('')}
+                                    ${career.majors.length > 3 ? `<span class="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded text-[11px]">+${career.majors.length - 3}</span>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+                        <span class="text-sky-600 font-bold group-hover:underline flex items-center">
+                            세부 정보 및 추천 대학 보기 <i class="fa-solid fa-arrow-right ml-1 transition group-hover:translate-x-1"></i>
+                        </span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            document.getElementById('career-count').innerText = `${CAREER_DATA.length}개`;
+        }
+
+
+        // ================= MODAL LOGIC =================
+        function openModal(careerId) {
+            const career = CAREER_DATA.find(c => c.id === careerId);
+            if (!career) return;
+
+            document.getElementById('modal-badge').innerHTML = `
+                <span class="text-xs font-bold px-3 py-1 rounded-full ${career.badgeBg}">
+                    ${career.category}
+                </span>
+            `;
+            document.getElementById('modal-title').innerText = career.title;
+            document.getElementById('modal-tagline').innerText = career.tagline;
+            document.getElementById('modal-duties').innerText = career.duties;
+            document.getElementById('modal-cases').innerText = `"${career.cases}"`;
+
+            // Majors
+            document.getElementById('modal-majors').innerHTML = career.majors.map(m => `
+                <span class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-1 rounded-md">${m}</span>
+            `).join('');
+
+            // Universities Categorized
+            document.getElementById('modal-unis-top').innerText = career.universities.top.join(', ');
+            document.getElementById('modal-unis-mid').innerText = career.universities.mid.join(', ');
+            document.getElementById('modal-unis-regional').innerText = career.universities.regional.join(', ');
+            document.getElementById('modal-unis-accessible').innerText = career.universities.accessible.join(', ');
+
+            // HS General Subjects
+            document.getElementById('modal-hs-general').innerHTML = career.hsGeneralSubjects.map(s => `
+                <span class="bg-sky-100 text-sky-800 text-xs font-medium px-2.5 py-1 rounded-md">${s}</span>
+            `).join('');
+
+            // HS Career Subjects
+            document.getElementById('modal-hs-career').innerHTML = career.hsCareerSubjects.map(s => `
+                <span class="bg-slate-200 text-slate-800 text-xs font-medium px-2.5 py-1 rounded-md">${s}</span>
+            `).join('');
+
+            // Competencies with progress bar
+            document.getElementById('modal-competencies').innerHTML = career.competencies.map(comp => `
+                <div class="bg-white p-3 rounded-lg border border-slate-200">
+                    <div class="flex justify-between items-center text-xs font-bold mb-1">
+                        <span class="text-slate-800">${comp.name}</span>
+                        <span class="text-sky-600">${comp.level}%</span>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-2 mb-1">
+                        <div class="bg-sky-500 h-2 rounded-full" style="width: ${comp.level}%"></div>
+                    </div>
+                    <p class="text-[11px] text-slate-500">${comp.desc}</p>
+                </div>
+            `).join('');
+
+            // Projects
+            document.getElementById('modal-projects').innerHTML = career.projects.map(p => `
+                <div class="bg-amber-50/60 p-4 rounded-xl border border-amber-200/80">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-xs font-bold text-amber-800 bg-amber-200/60 px-2 py-0.5 rounded">${p.subject} 연계</span>
+                        <span class="text-[11px] font-semibold text-slate-500">${p.tag}</span>
+                    </div>
+                    <h4 class="font-bold text-slate-900 text-sm mb-1">${p.title}</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">${p.desc}</p>
+                </div>
+            `).join('');
+
+            // Setup Modal Comparison Button
+            const btnCompare = document.getElementById('modal-btn-compare');
+            btnCompare.onclick = () => {
+                compareSelection[0] = career.id;
+                document.getElementById('compare-select-1').value = career.id;
+                closeModal();
+                switchTab('compare');
+                renderComparison();
+                showToast(`'${career.title}'이(가) 비교 직업 1로 설정되었습니다.`);
+            };
+
+            document.getElementById('detail-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('detail-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+
+        // ================= SECTION 2: COMPARISON LOGIC =================
+        function populateSelectOptions() {
+            const select1 = document.getElementById('compare-select-1');
+            const select2 = document.getElementById('compare-select-2');
+            const roadmapSelect = document.getElementById('roadmap-career-select');
+
+            select1.innerHTML = '';
+            select2.innerHTML = '';
+            roadmapSelect.innerHTML = '';
+
+            CAREER_DATA.forEach((c, idx) => {
+                select1.innerHTML += `<option value="${c.id}" ${idx === 0 ? 'selected' : ''}>${c.title}</option>`;
+                select2.innerHTML += `<option value="${c.id}" ${idx === 1 ? 'selected' : ''}>${c.title}</option>`;
+                roadmapSelect.innerHTML += `<option value="${c.id}" ${idx === 0 ? 'selected' : ''}>${c.title}</option>`;
+            });
+        }
+
+        function renderComparison() {
+            const id1 = document.getElementById('compare-select-1').value;
+            const id2 = document.getElementById('compare-select-2').value;
+
+            const c1 = CAREER_DATA.find(c => c.id === id1);
+            const c2 = CAREER_DATA.find(c => c.id === id2);
+
+            const container = document.getElementById('comparison-result');
+
+            if (id1 === id2) {
+                container.innerHTML = `
+                    <div class="p-8 text-center bg-amber-50 rounded-xl border border-amber-200 text-amber-800">
+                        <i class="fa-solid fa-triangle-exclamation text-2xl mb-2"></i>
+                        <p class="font-bold text-sm">서로 다른 2개의 직업을 선택해주세요.</p>
+                        <p class="text-xs text-amber-600 mt-1">동일한 직업을 선택하면 비교 분석을 수행할 수 없습니다.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // High School Common Subjects
+            const commonHS = c1.hsGeneralSubjects.filter(s => c2.hsGeneralSubjects.includes(s));
+            
+            container.innerHTML = `
+                <!-- Side-by-Side Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- Career 1 Column -->
+                    <div class="bg-sky-50/50 p-5 rounded-2xl border border-sky-200 space-y-4">
+                        <div class="flex items-center space-x-3 border-b border-sky-200 pb-3">
+                            <div class="w-10 h-10 rounded-xl ${c1.iconBg} text-white flex items-center justify-center font-bold">
+                                <i class="fa-solid ${c1.icon}"></i>
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-bold uppercase text-sky-600">직업 A</span>
+                                <h3 class="font-bold text-slate-900 text-base">${c1.title}</h3>
+                            </div>
+                        </div>
+
+                        <div>
+                            <span class="text-xs font-bold text-slate-700 block mb-1"><i class="fa-solid fa-briefcase text-sky-600 mr-1"></i> 핵심 직무</span>
+                            <p class="text-xs text-slate-600 leading-relaxed bg-white p-3 rounded-lg border border-sky-100">${c1.duties}</p>
+                        </div>
+
+                        <div>
+                            <span class="text-xs font-bold text-slate-700 block mb-1"><i class="fa-solid fa-graduation-cap text-sky-600 mr-1"></i> 추천 학과 & 주요/도전 대학</span>
+                            <div class="bg-white p-3 rounded-lg border border-sky-100 space-y-2 text-xs">
+                                <div>
+                                    <strong class="text-slate-800 text-[11px]">추천 학과:</strong>
+                                    <p class="text-slate-600 text-[11px]">${c1.majors.join(', ')}</p>
+                                </div>
+                                <div class="pt-1 border-t border-slate-100">
+                                    <strong class="text-slate-800 text-[11px]">주요 진학 대학:</strong>
+                                    <p class="text-slate-600 text-[11px]">상위권: ${c1.universities.top.slice(0, 4).join(', ')} / 수도권·거점: ${c1.universities.mid.slice(0, 3).join(', ')} / 도전: ${c1.universities.accessible.slice(0, 3).join(', ')}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <span class="text-xs font-bold text-slate-700 block mb-1"><i class="fa-solid fa-star text-sky-600 mr-1"></i> 대표 필요 역량</span>
+                            <ul class="text-xs text-slate-600 space-y-1 bg-white p-3 rounded-lg border border-sky-100">
+                                ${c1.competencies.map(comp => `<li>• <strong>${comp.name}</strong> (${comp.level}%)</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Career 2 Column -->
+                    <div class="bg-indigo-50/50 p-5 rounded-2xl border border-indigo-200 space-y-4">
+                        <div class="flex items-center space-x-3 border-b border-indigo-200 pb-3">
+                            <div class="w-10 h-10 rounded-xl ${c2.iconBg} text-white flex items-center justify-center font-bold">
+                                <i class="fa-solid ${c2.icon}"></i>
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-bold uppercase text-indigo-600">직업 B</span>
+                                <h3 class="font-bold text-slate-900 text-base">${c2.title}</h3>
+                            </div>
+                        </div>
+
+                        <div>
+                            <span class="text-xs font-bold text-slate-700 block mb-1"><i class="fa-solid fa-briefcase text-indigo-600 mr-1"></i> 핵심 직무</span>
+                            <p class="text-xs text-slate-600 leading-relaxed bg-white p-3 rounded-lg border border-indigo-100">${c2.duties}</p>
+                        </div>
+
+                        <div>
+                            <span class="text-xs font-bold text-slate-700 block mb-1"><i class="fa-solid fa-graduation-cap text-indigo-600 mr-1"></i> 추천 학과 & 주요/도전 대학</span>
+                            <div class="bg-white p-3 rounded-lg border border-indigo-100 space-y-2 text-xs">
+                                <div>
+                                    <strong class="text-slate-800 text-[11px]">추천 학과:</strong>
+                                    <p class="text-slate-600 text-[11px]">${c2.majors.join(', ')}</p>
+                                </div>
+                                <div class="pt-1 border-t border-slate-100">
+                                    <strong class="text-slate-800 text-[11px]">주요 진학 대학:</strong>
+                                    <p class="text-slate-600 text-[11px]">상위권: ${c2.universities.top.slice(0, 4).join(', ')} / 수도권·거점: ${c2.universities.mid.slice(0, 3).join(', ')} / 도전: ${c2.universities.accessible.slice(0, 3).join(', ')}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <span class="text-xs font-bold text-slate-700 block mb-1"><i class="fa-solid fa-star text-indigo-600 mr-1"></i> 대표 필요 역량</span>
+                            <ul class="text-xs text-slate-600 space-y-1 bg-white p-3 rounded-lg border border-indigo-100">
+                                ${c2.competencies.map(comp => `<li>• <strong>${comp.name}</strong> (${comp.level}%)</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Commonalities & Differences Analysis Box -->
+                <div class="bg-slate-900 text-white p-6 rounded-2xl space-y-4 shadow-lg">
+                    <h4 class="font-bold text-base text-sky-400 flex items-center">
+                        <i class="fa-solid fa-magnifying-glass-chart mr-2"></i> 직무 및 역량 공통점 · 차이점 종합 비교
+                    </h4>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                        <!-- Commonalities -->
+                        <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 space-y-2">
+                            <span class="font-bold text-emerald-400 text-sm flex items-center">
+                                <i class="fa-solid fa-circle-check mr-1.5"></i> 공통점 (Commonalities)
+                            </span>
+                            <ul class="space-y-1.5 text-slate-300 leading-relaxed">
+                                <li>• <strong>학문적 기반:</strong> 수학(미적분, 기하) 및 물리학(전자기학, 회로이론)에 대한 강한 원리적 이해가 필수적입니다.</li>
+                                <li>• <strong>공통 고교 이수과목:</strong> <span class="text-sky-300 font-semibold">${commonHS.join(', ')}</span> 과목이 공통으로 매우 중요합니다.</li>
+                                <li>• <strong>진학 경로:</strong> 전자공학과, 전기전자공학과 등 기반 공학 학과 및 주요 대학 라인업을 공유합니다.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Differences -->
+                        <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-700 space-y-2">
+                            <span class="font-bold text-amber-400 text-sm flex items-center">
+                                <i class="fa-solid fa-code-branch mr-1.5"></i> 차이점 (Differences)
+                            </span>
+                            <ul class="space-y-1.5 text-slate-300 leading-relaxed">
+                                <li>• <strong>직무 중심축:</strong> [${c1.title}]은 <em>${c1.category}</em> 중심의 특화 연구인 반면, [${c2.title}]은 <em>${c2.category}</em> 분야의 R&D에 집중됩니다.</li>
+                                <li>• <strong>특화 역량:</strong> ${c1.competencies[0].name} vs ${c2.competencies[0].name} 등의 세부 지식 차이가 존재합니다.</li>
+                                <li>• <strong>세부 특화 학과:</strong> 일반 전자공학 외에도 ${c1.majors[1] || c1.majors[0]} vs ${c2.majors[1] || c2.majors[0]} 등 전공 세분화의 차이가 있습니다.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+
+        // ================= SECTION 3: ROADMAP LOGIC =================
+        function renderRoadmap() {
+            const selectedId = document.getElementById('roadmap-career-select').value;
+            const career = CAREER_DATA.find(c => c.id === selectedId);
+            if (!career) return;
+
+            // Render Header Banner
+            document.getElementById('roadmap-header').innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center text-white text-2xl font-bold">
+                        <i class="fa-solid ${career.icon}"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs text-sky-200 font-semibold uppercase">Roadmap Target</span>
+                        <h3 class="text-xl font-black">${career.title} 진로 로드맵</h3>
+                    </div>
+                </div>
+                <div class="hidden sm:block text-right text-xs text-sky-100">
+                    <span>${career.category}</span>
+                </div>
+            `;
+
+            // Step 1: High School
+            document.getElementById('roadmap-step-1').innerHTML = `
+                <div class="bg-sky-50/60 p-3 rounded-lg border border-sky-100 mb-2">
+                    <span class="font-bold text-sky-900 block mb-1">권장 선택 과목 이수 지도</span>
+                    <p class="text-xs text-slate-700">
+                        <strong>일반선택:</strong> ${career.hsGeneralSubjects.join(', ')}<br>
+                        <strong>진로/융합선택:</strong> ${career.hsCareerSubjects.join(', ')}
+                    </p>
+                </div>
+                <ul class="space-y-1.5 text-xs text-slate-700">
+                    ${career.roadmap.hs.map(item => `<li class="flex items-start"><i class="fa-solid fa-check text-sky-500 mt-0.5 mr-2"></i><span>${item}</span></li>`).join('')}
+                </ul>
+            `;
+
+            // Step 2: University
+            document.getElementById('roadmap-step-2').innerHTML = `
+                <div class="bg-indigo-50/60 p-3 rounded-lg border border-indigo-100 mb-2 space-y-1.5">
+                    <div>
+                        <span class="font-bold text-indigo-900 block text-xs">관련 추천 전공 학과</span>
+                        <p class="text-xs text-slate-700 font-medium">${career.majors.join(' / ')}</p>
+                    </div>
+                    <div class="pt-1.5 border-t border-indigo-100">
+                        <span class="font-bold text-indigo-900 block text-[11px]">목표 대학 라인업 (성적대별 선택 가능)</span>
+                        <p class="text-[11px] text-slate-600">
+                            <strong>주요대:</strong> ${career.universities.top.slice(0, 3).join(', ')} 등<br>
+                            <strong>수도권/거점국립대:</strong> ${career.universities.mid.slice(0, 3).join(', ')}, ${career.universities.regional.slice(0, 2).join(', ')}<br>
+                            <strong>도전/지원 가능 대학:</strong> ${career.universities.accessible.slice(0, 4).join(', ')}
+                        </p>
+                    </div>
+                </div>
+                <ul class="space-y-1.5 text-xs text-slate-700">
+                    ${career.roadmap.univ.map(item => `<li class="flex items-start"><i class="fa-solid fa-check text-indigo-600 mt-0.5 mr-2"></i><span>${item}</span></li>`).join('')}
+                </ul>
+            `;
+
+            // Step 3: Career
+            document.getElementById('roadmap-step-3').innerHTML = `
+                <div class="bg-slate-100 p-3 rounded-lg border border-slate-200 mb-2">
+                    <span class="font-bold text-slate-900 block mb-1">R&D 연구원 진출 경로</span>
+                    <p class="text-xs text-slate-700">학사 후 R&D 입사 또는 석·박사 학위 취득 후 기업/국책 연구소 연구원 진출</p>
+                </div>
+                <ul class="space-y-1.5 text-xs text-slate-700">
+                    ${career.roadmap.career.map(item => `<li class="flex items-start"><i class="fa-solid fa-check text-slate-800 mt-0.5 mr-2"></i><span>${item}</span></li>`).join('')}
+                </ul>
+            `;
+
+            // Interactive Checklist
+            document.getElementById('roadmap-checklist').innerHTML = [
+                `고교 [${career.hsGeneralSubjects[0]}] 기본 원리 탐구 보고서 작성하기`,
+                `아두이노/기초 회로 키트로 실습 경험 쌓기`,
+                `관련 분야 고교 동아리(전자/로봇/코딩) 활동 참여`,
+                `목표 학과(${career.majors[0]}) 커리큘럼 및 대학별 입시 전형 조사하기`
+            ].map((check, idx) => `
+                <label class="flex items-center p-3 bg-white rounded-lg border border-slate-200 cursor-pointer hover:bg-sky-50/50 transition">
+                    <input type="checkbox" onchange="toggleCheck(this)" class="w-4 h-4 text-sky-600 rounded border-slate-300 focus:ring-sky-500 mr-3">
+                    <span class="text-xs text-slate-700 font-medium">${check}</span>
+                </label>
+            `).join('');
+        }
+
+        function toggleCheck(checkbox) {
+            const span = checkbox.nextElementSibling;
+            if (checkbox.checked) {
+                span.classList.add('line-through', 'text-slate-400');
+                showToast("체크리스트 항목을 완료했습니다!");
+            } else {
+                span.classList.remove('line-through', 'text-slate-400');
+            }
+        }
+
+
+        // ================= SECTION 4: PROJECTS LOGIC =================
+        function renderProjects() {
+            // Render Filter Buttons
+            const categories = Array.from(new Set(CAREER_DATA.map(c => c.category)));
+            const filterContainer = document.getElementById('project-filter-buttons');
+            
+            filterContainer.innerHTML = `
+                <button onclick="filterProjects('all')" class="project-filter-btn px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-200 ${selectedProjectCategory === 'all' ? 'bg-sky-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'} transition">
+                    전체 보기
+                </button>
+            ` + categories.map(cat => `
+                <button onclick="filterProjects('${cat}')" class="project-filter-btn px-3 py-1.5 text-xs font-bold rounded-lg border border-slate-200 ${selectedProjectCategory === cat ? 'bg-sky-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'} transition">
+                    ${cat}
+                </button>
+            `).join('');
+
+            // Gather All Projects
+            let allProjects = [];
+            CAREER_DATA.forEach(career => {
+                career.projects.forEach(p => {
+                    allProjects.push({
+                        ...p,
+                        careerTitle: career.title,
+                        category: career.category,
+                        icon: career.icon
+                    });
+                });
+            });
+
+            if (selectedProjectCategory !== 'all') {
+                allProjects = allProjects.filter(p => p.category === selectedProjectCategory);
+            }
+
+            const listContainer = document.getElementById('project-list-container');
+            listContainer.innerHTML = allProjects.map(p => `
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition space-y-3 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                                ${p.subject}
+                            </span>
+                            <span class="text-[11px] text-slate-400 font-medium">${p.tag}</span>
+                        </div>
+                        <h3 class="font-bold text-slate-900 text-sm mb-2 leading-snug">${p.title}</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">${p.desc}</p>
+                    </div>
+
+                    <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+                        <span>연계 세부 직업: <strong>${p.careerTitle}</strong></span>
+                        <button onclick="copyProjectTitle('${p.title.replace(/'/g, "\\'")}')" class="text-sky-600 hover:text-sky-800 font-bold flex items-center">
+                            <i class="fa-regular fa-copy mr-1"></i> 주제 복사
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterProjects(cat) {
+            selectedProjectCategory = cat;
+            renderProjects();
+        }
+
+        function copyProjectTitle(text) {
+            // execCommand copy implementation for iframe safety
+            const dummy = document.createElement("textarea");
+            document.body.appendChild(dummy);
+            dummy.value = text;
+            dummy.select();
+            document.execCommand("copy");
+            document.body.removeChild(dummy);
+            showToast("탐구 주제가 클립보드에 복사되었습니다!");
+        }
+
+
+        // ================= UTILS / TOAST =================
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
